@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"
+    />
+    <title>mochicam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Mochicam" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="sparkle-layer"></div>
+
+    <h1 class="brand">mochi cam</h1>
+    <p class="tagline">
+      a squishy little digicam that flashes, grains, and stamps every shot with
+      the year — no paywall, ever.
+    </p>
+
+    <div class="camera" id="cameraBody">
+      <span class="strap-hole l"></span><span class="strap-hole r"></span>
+
+      <div class="top-row">
+        <div class="lens-dot"></div>
+        <div class="brand-mini">MOCHI · CS100</div>
+        <div class="rec-led"></div>
+      </div>
+
+      <div class="screen-bezel">
+        <div class="viewfinder" id="viewfinder">
+          <video id="video" autoplay playsinline muted></video>
+          <img id="stillImg" class="still" style="display: none" />
+          <canvas id="workCanvas" class="hidden-canvas"></canvas>
+          <div class="placeholder" id="placeholder">
+            <span class="icon">🎀</span>
+            <p>
+              no camera preview yet —<br />tap the shutter to take or upload a
+              photo
+            </p>
+          </div>
+          <div class="flash-overlay" id="flashOverlay"></div>
+          <div class="toast" id="toast">saved!</div>
+          <button class="shoot-again" id="shootAgainBtn" style="display: none">
+            ↻ shoot again
+          </button>
+          <button
+            class="save-gallery"
+            id="saveGalleryBtn"
+            style="display: none"
+          >
+            💾 save to gallery
+          </button>
+          <div class="lcd-hud">
+            <span id="hudDate">'26 8 16</span>
+            <span id="hudBattery">🔋4/4</span>
+            <span id="hudCounter">24</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filters" id="filterRow">
+        <button class="filter-btn active" data-filter="cybershot">
+          <span class="em">📼</span>Cyber-shot
+        </button>
+        <button class="filter-btn" data-filter="y2kflash">
+          <span class="em">⚡</span>Y2K Flash
+        </button>
+        <button class="filter-btn" data-filter="vhs">
+          <span class="em">📺</span>VHS
+        </button>
+        <button class="filter-btn" data-filter="disposable">
+          <span class="em">🧃</span>Disposable
+        </button>
+      </div>
+
+      <div class="controls">
+        <button
+          class="side-btn gallery-peek"
+          id="galleryPeekBtn"
+          title="Open gallery"
+        ></button>
+        <button class="shutter-btn" id="shutterBtn" title="Take photo"></button>
+        <button class="side-btn" id="flashToggleBtn" title="Toggle flash boost">
+          ⚡
+        </button>
+      </div>
+
+      <div class="shell-row" id="shellRow">
+        <div
+          class="swatch active"
+          style="background: #ffb9d6"
+          data-shell="#FFB9D6|#F08FBB|#FFE1EF"
+        ></div>
+        <div
+          class="swatch"
+          style="background: #d9c9ff"
+          data-shell="#D9C9FF|#B39CF0|#F0E6FF"
+        ></div>
+        <div
+          class="swatch"
+          style="background: #aee3ff"
+          data-shell="#AEE3FF|#7CC3EE|#E6F7FF"
+        ></div>
+        <div
+          class="swatch"
+          style="background: #e4e7ec"
+          data-shell="#E4E7EC|#B7BCC6|#F7F8FA"
+        ></div>
+      </div>
+    </div>
+
+    <button
+      class="lb-btn download"
+      id="uploadBtn"
+      style="margin-top: 16px; padding: 10px 20px; border-radius: 14px"
+    >
+      🖼 upload a photo instead
+    </button>
+    <input type="file" id="fileInput" accept="image/*" capture="environment" />
+
+    <div class="filmstrip-wrap">
+      <p class="filmstrip-label">your roll</p>
+      <div class="filmstrip" id="filmstrip">
+        <span class="film-empty"
+          >no shots yet — your gallery will fill up here 🌸</span
+        >
+      </div>
+    </div>
+
+    <div class="lightbox" id="lightbox">
+      <div class="lightbox-card">
+        <div class="lightbox-imgwrap">
+          <button class="lb-nav prev" id="lbPrev" aria-label="previous photo">
+            ‹
+          </button>
+          <img id="lightboxImg" src="" alt="photo" />
+          <button class="lb-nav next" id="lbNext" aria-label="next photo">
+            ›
+          </button>
+        </div>
+        <p class="lb-position" id="lbPosition">1 / 1</p>
+        <div class="lightbox-actions">
+          <button class="lb-btn download" id="lbDownload">download</button>
+          <button class="lb-btn delete" id="lbDelete">delete</button>
+          <button class="lb-btn close" id="lbClose">close</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("./sw.js")
+          .then(() => console.log("Mochicam service worker registered"))
+          .catch((error) => console.error("Service worker failed:", error));
+      }
+    </script>
+  </body>
+</html>
